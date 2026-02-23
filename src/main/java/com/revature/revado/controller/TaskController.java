@@ -1,11 +1,43 @@
 package com.revature.revado.controller;
 
+import com.revature.revado.dto.StatusRequest;
+import com.revature.revado.entity.Task;
 import com.revature.revado.service.TaskService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
 public class TaskController {
     private final TaskService taskService;
+    @GetMapping(path = "/tasks")
+    public List<Task> getTasks() {
+        return taskService.getTasks();
+    }
+
+    @GetMapping(path = "/tasks/assignedTo")
+    public List<Task> getTasksByAssignedTo(@RequestParam String assignedTo) {
+        return taskService.getTasksByAssignedTo(assignedTo);
+    }
+    @GetMapping(path= "/tasks/taskId")
+    public Task getTaskByTaskId(@RequestParam String taskId) {
+        return taskService.getTask(java.util.UUID.fromString(taskId));
+    }
+
+    @DeleteMapping(path = "/tasks/{id}")
+    public void deleteTaskById(@PathVariable String id) {
+        taskService.deleteTaskById(java.util.UUID.fromString(id));
+    }
+
+    @PostMapping(path = "/tasks")
+    public void addtask(@RequestBody Task task) {
+        taskService.addTask(task);
+    }
+
+    @PatchMapping(path = "/tasks/status")
+    public void updateTaskStatus(@RequestBody StatusRequest updateRequest) {
+        taskService.updateTask(updateRequest);
+    }
 }
