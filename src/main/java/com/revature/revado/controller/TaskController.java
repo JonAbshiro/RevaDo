@@ -1,6 +1,7 @@
 package com.revature.revado.controller;
 
 import com.revature.revado.dto.StatusRequest;
+import com.revature.revado.dto.TaskCreateRequest;
 import com.revature.revado.entity.Task;
 import com.revature.revado.service.TaskService;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +33,7 @@ public class TaskController {
     }
 
     @PostMapping(path = "/tasks")
-    public void addtask(@RequestBody Task task) {
+    public void addTask(@RequestBody TaskCreateRequest task) {
         taskService.addTask(task);
     }
 

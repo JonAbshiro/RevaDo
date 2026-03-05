@@ -13,7 +13,7 @@ public class SubTask{
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-    private UUID taskId;
+    private UUID parentTaskId;
     private String name;
     private String description;
     private Status status;

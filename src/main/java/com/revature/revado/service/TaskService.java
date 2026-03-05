@@ -1,7 +1,9 @@
 package com.revature.revado.service;
 
 import com.revature.revado.dto.StatusRequest;
+import com.revature.revado.dto.TaskCreateRequest;
 import com.revature.revado.entity.Task;
+import com.revature.revado.model.Status;
 import com.revature.revado.repository.TaskRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,8 +28,13 @@ public class TaskService {
         return taskRepository.getTaskByTaskId(taskId);
     }
 
-    public void addTask(Task task) {
-        taskRepository.save(task);
+    public void addTask(TaskCreateRequest task) {
+        Task newTask = new Task();
+        newTask.setName(task.getName());
+        newTask.setDescription(task.getDescription());
+        newTask.setAssignedTo(task.getAssignedTo());
+        newTask.setStatus(Status.TODO);
+        taskRepository.save(newTask);
     }
 
     public void updateTask(StatusRequest statusRequest) {

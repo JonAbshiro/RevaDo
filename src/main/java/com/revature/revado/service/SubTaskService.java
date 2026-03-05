@@ -1,10 +1,12 @@
 package com.revature.revado.service;
 
 import com.revature.revado.dto.StatusRequest;
+import com.revature.revado.dto.SubtaskCreateRequest;
 import com.revature.revado.entity.SubTask;
 import com.revature.revado.repository.SubTaskRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,10 +26,15 @@ public class SubTaskService{
     }
 
     public List<SubTask> getSubTasksByTaskId(UUID taskId) {
-        return subTaskRepository.findSubTasksByTaskId(taskId);
+        return subTaskRepository.findSubTasksByParentTaskId(taskId);
     }
 
-    public void addSubTask(SubTask subTask) {
+    public void addSubTask(SubtaskCreateRequest subTaskRequest) {
+        SubTask subTask = new SubTask();
+        subTaskRequest.setName(subTaskRequest.getName());
+        subTaskRequest.setDescription(subTaskRequest.getDescription());
+        subTask.setParentTaskId(subTaskRequest.getParentTaskId());
+        subTask.setAssignedTo(StringUtils.isNotBlank(subTaskRequest.getAssignedTo()) ? subTaskRequest.getAssignedTo() : null);
         subTaskRepository.save(subTask);
     }
 

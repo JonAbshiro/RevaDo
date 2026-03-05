@@ -1,8 +1,10 @@
 package com.revature.revado.controller;
 
 import com.revature.revado.dto.StatusRequest;
+import com.revature.revado.dto.SubtaskCreateRequest;
 import com.revature.revado.entity.SubTask;
 import com.revature.revado.service.SubTaskService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,8 +35,8 @@ public class SubTaskController {
     }
 
     @PostMapping(path = "/subtasks")
-    public void addSubTask(@RequestBody SubTask subTask) {
-        subTaskService.addSubTask(subTask);
+    public void addSubTask(@RequestBody @Valid SubtaskCreateRequest subTaskCreateRequest) {
+        subTaskService.addSubTask(subTaskCreateRequest);
     }
 
     @PatchMapping(path = "/subtasks/status")
