@@ -1,0 +1,65 @@
+<mat-card>
+  <mat-card-content>
+    <mat-card-header>
+      <mat-card-title>Create new user</mat-card-title>
+    </mat-card-header>
+    <form [formGroup]="createForm" (ngSubmit)="onSubmit()" novalidate aria-label="Create account form">
+      <mat-form-field appearance="outline">
+        <mat-label>Email address</mat-label>
+        <input matInput type="email" formControlName="email" placeholder="you@example.com" autocomplete="email"
+               aria-required="true"/>
+        <mat-icon matPrefix>mail_outline</mat-icon>
+        <mat-error>{{ getEmailError() }}</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Username</mat-label>
+        <input matInput type="text" formControlName="username" placeholder="johndoe" autocomplete="username"
+               aria-required="true"/>
+        <mat-icon matPrefix>person_outline</mat-icon>
+        <mat-error>{{ getUsernameError() }}</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Phone number</mat-label>
+        <input matInput type="tel" formControlName="phoneNumber" placeholder="555-555-5555" autocomplete="tel"
+               aria-required="true"/>
+        <mat-icon matPrefix>phone_outline</mat-icon>
+        <mat-error>{{ getPhoneError() }}</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Password</mat-label>
+        <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="password" placeholder="••••••••"
+               autocomplete="new-password" aria-required="true"/>
+        <mat-icon matPrefix>lock_outline</mat-icon>
+        <button mat-icon-button matSuffix type="button" (click)="hidePassword = !hidePassword"
+                [attr.aria-label]="hidePassword ? 'Show password' : 'Hide password'">
+          <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+        </button>
+        <mat-error>{{ getPasswordError() }}</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Confirm password</mat-label>
+        <input matInput [type]="hideConfirmPassword ? 'password' : 'text'" formControlName="confirmPassword"
+               placeholder="••••••••" autocomplete="new-password" aria-required="true"/>
+        <mat-icon matPrefix>lock_outline</mat-icon>
+        <button mat-icon-button matSuffix type="button" (click)="hideConfirmPassword = !hideConfirmPassword"
+                [attr.aria-label]="hideConfirmPassword ? 'Show password' : 'Hide password'">
+          <mat-icon>{{ hideConfirmPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+        </button>
+        <mat-error>{{ getConfirmPasswordError() }}</mat-error>
+      </mat-form-field>
+
+      <button mat-flat-button type="submit" color="primary" [disabled]="isLoading()" aria-live="polite">
+    <span *ngIf="!isLoading()" style="display:flex; align-items:center; gap:0.5rem;">
+      <span>Create Account</span>
+      <mat-icon>arrow_forward</mat-icon>
+    </span>
+        <mat-spinner *ngIf="isLoading()" diameter="22"></mat-spinner>
+      </button>
+
+    </form>
+  </mat-card-content>
+</mat-card>

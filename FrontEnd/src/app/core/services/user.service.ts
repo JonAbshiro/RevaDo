@@ -10,11 +10,10 @@ export class UserService {
 
   constructor(private httpClient: HttpClient, private router: Router){}
 
-  registerUser(username: string, password: string){
-    this.httpClient.post<{id:string, username: string, password: string}>("http://localhost:8080/user",{username, password}).subscribe({
-      next: response => alert(`account registered with username ${response.username}`),
-      error: error => alert("something went wrong registering, please try again")
-    });
+  createUser(username: string, password: string, email: string, phoneNumber: string ){
+    return this.httpClient.post<{email:string, username: string, phoneNumber: string, password: string}>
+    ("http://localhost:8080/user",
+      {username, password, phoneNumber, email})
   }
 
   login(username: string, password: string) {

@@ -5,8 +5,9 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatCardModule } from '@angular/material/card';
+import { MatSidenavModule } from '@angular/material/sidenav';
 import { UserService } from '../../core/services/user.service';
 import { Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -22,8 +23,9 @@ import { RouterOutlet } from '@angular/router';
     MatInputModule,
     MatButtonModule,
     MatIconModule,
-    MatCheckboxModule,
     MatProgressSpinnerModule,
+    MatSidenavModule,
+    MatCardModule
   ],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
@@ -57,6 +59,9 @@ export class LoginComponent {
     return '';
   }
 
+  createAccount(): void {
+    this.router.navigate(['/create-user']);
+  }
   onSubmit(): void {
     if (this.loginForm.valid) {
       this.isLoading.set(true);
