@@ -29,6 +29,16 @@ public class SubTaskService{
         return subTaskRepository.findSubTasksByParentTaskId(taskId);
     }
 
+    public void updateSubTask(UUID id, SubtaskCreateRequest updateRequest) {
+        SubTask subTask = subTaskRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Subtask not found"));
+        subTask.setName(updateRequest.getName());
+        subTask.setDescription(updateRequest.getDescription());
+        subTask.setStatus(updateRequest.getStatus());
+        subTask.setAssignedTo(updateRequest.getAssignedTo());
+        subTaskRepository.save(subTask);
+    }
+
     public void addSubTask(SubtaskCreateRequest subTaskRequest) {
         SubTask subTask = new SubTask();
         subTaskRequest.setName(subTaskRequest.getName());

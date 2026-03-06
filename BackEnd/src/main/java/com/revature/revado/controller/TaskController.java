@@ -4,6 +4,7 @@ import com.revature.revado.dto.StatusRequest;
 import com.revature.revado.dto.TaskCreateRequest;
 import com.revature.revado.entity.Task;
 import com.revature.revado.service.TaskService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,5 +41,10 @@ public class TaskController {
     @PostMapping(path = "/tasks/status")
     public void updateTaskStatus(@RequestBody StatusRequest updateRequest) {
         taskService.updateTask(updateRequest);
+    }
+
+    @PatchMapping(path = "/tasks/{id}")
+    public void updateTask(@PathVariable String id, @RequestBody @Valid TaskCreateRequest updateRequest) {
+        taskService.updateTask(java.util.UUID.fromString(id), updateRequest);
     }
 }

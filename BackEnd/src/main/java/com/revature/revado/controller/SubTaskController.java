@@ -34,6 +34,11 @@ public class SubTaskController {
         subTaskService.deleteSubTaskById(java.util.UUID.fromString(id));
     }
 
+    @PatchMapping(path = "/subtasks/{id}")
+    public void updateSubTask(@PathVariable String id, @RequestBody @Valid SubtaskCreateRequest updateRequest) {
+        subTaskService.updateSubTask(java.util.UUID.fromString(id), updateRequest);
+    }
+
     @PostMapping(path = "/subtasks")
     public void addSubTask(@RequestBody @Valid SubtaskCreateRequest subTaskCreateRequest) {
         subTaskService.addSubTask(subTaskCreateRequest);

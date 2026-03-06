@@ -1,5 +1,6 @@
 package com.revature.revado.dto;
 
+import com.revature.revado.model.Status;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,5 +18,6 @@ public class SubtaskCreateRequest{
     private String description;
     @NotBlank
     private UUID parentTaskId;
+    private Status status;
     private String assignedTo;
 }

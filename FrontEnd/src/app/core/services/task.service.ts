@@ -7,15 +7,14 @@ export interface Task {
   title: string;
   description: string;
   status: string;
-  createdAt: string;
-  dueDate: string;
+  assignedTo: string;
 }
 
 export interface TaskCreateRequest {
   title: string;
   description: string;
   status: string;
-  dueDate: string;
+  assignedTo: string;
 }
 
 export interface StatusRequest {
@@ -51,6 +50,10 @@ export class TaskService {
 
   addTask(task: TaskCreateRequest): Observable<void> {
     return this.httpClient.post<void>(`${this.apiUrl}/tasks`, task);
+  }
+
+  updateTask(id: string, task: TaskCreateRequest): Observable<void> {
+    return this.httpClient.patch<void>(`${this.apiUrl}/tasks/${id}`, task);
   }
 
   updateTaskStatus(updateRequest: StatusRequest): Observable<void> {

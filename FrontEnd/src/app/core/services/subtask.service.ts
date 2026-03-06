@@ -55,6 +55,10 @@ export class SubtaskService {
     return this.httpClient.post<void>(`${this.apiUrl}/subtasks`, subtask);
   }
 
+  updateSubTask(id: string, subtask: SubtaskCreateRequest): Observable<void> {
+    return this.httpClient.patch<void>(`${this.apiUrl}/subtasks/${id}`, subtask);
+  }
+
   updateSubTaskStatus(updateRequest: StatusRequest): Observable<void> {
     return this.httpClient.patch<void>(`${this.apiUrl}/subtasks/status`, updateRequest);
   }
