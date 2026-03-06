@@ -37,7 +37,7 @@ public class TaskController {
         taskService.addTask(task);
     }
 
-    @PatchMapping(path = "/tasks/status")
+    @PostMapping(path = "/tasks/status")
     public void updateTaskStatus(@RequestBody StatusRequest updateRequest) {
         taskService.updateTask(updateRequest);
     }

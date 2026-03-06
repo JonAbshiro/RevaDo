@@ -1,0 +1,99 @@
+:host {
+  --radius: 12px;
+  display: block;
+}
+
+.login-page {
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  min-height: 100vh;
+  font-family: 'DM Sans', sans-serif;
+}
+
+@media (max-width: 768px) {
+  .login-page { grid-template-columns: 1fr; }
+  .brand-panel { display: none; }
+}
+
+.brand-panel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-right: 1px solid #e0e0e0;
+  padding: 3rem;
+}
+
+.logo-mark {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.5rem;
+}
+
+.brand-headline {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 300;
+  line-height: 1;
+  margin: 0 0 0.5rem;
+}
+
+.brand-sub { font-size: 0.9rem; margin: 0; }
+
+.form-panel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.form-card {
+  width: 100%;
+  max-width: 400px;
+  animation: fadeUp 0.4s ease both;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.form-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2rem;
+  font-weight: 400;
+  margin: 0 0 0.25rem;
+}
+
+.form-subtitle { font-size: 0.875rem; margin: 0 0 1.75rem; }
+
+.login-form { display: flex; flex-direction: column; gap: 0.25rem; }
+
+.field-full { width: 100%; }
+
+.form-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0.25rem 0 0.75rem;
+}
+
+.forgot-link { font-size: 0.8rem; text-decoration: none; }
+
+.submit-btn {
+  width: 100%;
+  height: 50px;
+  border-radius: var(--radius) !important;
+  font-size: 0.9375rem !important;
+  font-weight: 500 !important;
+  margin-top: 0.5rem !important;
+}
+
+.submit-btn:hover:not(:disabled) { opacity: 0.9; }
+
+.form-footer { margin-top: 1.75rem; text-align: center; font-size: 0.8rem; }
+
+.signup-link { text-decoration: none; font-weight: 500; }
