@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.UUID;
 
 @Data
 @AllArgsConstructor
@@ -17,7 +16,7 @@ public class SubtaskCreateRequest{
     @NotBlank
     private String description;
     @NotBlank
-    private UUID parentTaskId;
+    private String parentTaskId;
     private Status status;
     private String assignedTo;
 }

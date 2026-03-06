@@ -9,8 +9,8 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { TaskService, Task, StatusRequest as TaskStatusRequest } from '../../core/services/task.service';
-import { SubtaskService, SubTask, StatusRequest as SubtaskStatusRequest } from '../../core/services/subtask.service';
+import { TaskService, Task } from '../../core/services/task.service';
+import { SubtaskService, SubTask } from '../../core/services/subtask.service';
 import { TaskEditDialogComponent } from './task-edit-dialog/task-edit-dialog.component';
 import { forkJoin } from 'rxjs';
 
@@ -56,7 +56,7 @@ export class HomeComponent implements OnInit {
       next: ({ tasks, subtasks }) => {
         const tasksWithSubtasks: TaskWithSubtasks[] = tasks.map(task => ({
           ...task,
-          subtasks: subtasks.filter(s => s.taskId === task.taskId)
+          subtasks: subtasks.filter(s => s.parentTaskId === task.taskId)
         }));
         this.tasks.set(tasksWithSubtasks);
         this.isLoading.set(false);
@@ -65,6 +65,54 @@ export class HomeComponent implements OnInit {
         this.error.set('Failed to load tasks');
         this.isLoading.set(false);
       }
+    });
+  }
+
+  openCreateDialog(): void {
+    const currentUser = localStorage.getItem('userId') || '';
+    const ref = this.dialog.open(TaskEditDialogComponent, {
+      data: { isSubtask: false, isCreate: true, currentUser },
+      width: '400px',
+    });
+
+    ref.afterClosed().subscribe(result => {
+      if (!result || result.action !== 'save') return;
+
+      this.taskService.addTask(result.data).subscribe({
+        next: () => {
+          this.ngOnInit();
+        },
+        error: () => {
+          this.error.set('Failed to create task');
+        }
+      });
+    });
+  }
+
+  openCreateSubtaskDialog(task: Task, event: Event): void {
+    event.stopPropagation();
+    const currentUser = localStorage.getItem('userId') || '';
+    const ref = this.dialog.open(TaskEditDialogComponent, {
+      data: { isSubtask: true, isCreate: true, currentUser, taskId: task.taskId },
+      width: '400px',
+    });
+
+    ref.afterClosed().subscribe(result => {
+      if (!result || result.action !== 'save') return;
+
+      const subtaskData = {
+        ...result.data,
+        parentTaskId: task.taskId
+      };
+
+      this.subtaskService.addSubTask(subtaskData).subscribe({
+        next: () => {
+          this.ngOnInit();
+        },
+        error: () => {
+          this.error.set('Failed to create subtask');
+        }
+      });
     });
   }
 
@@ -78,27 +126,61 @@ export class HomeComponent implements OnInit {
     ref.afterClosed().subscribe(result => {
       if (!result) return;
 
-      if (isSubtask) {
-        const subtask = task as SubTask;
-        if (result.status !== subtask.status) {
-          const req: SubtaskStatusRequest = { id: subtask.subTaskId, status: result.status };
-          this.subtaskService.updateSubTaskStatus(req).subscribe();
+      if (result.action === 'delete') {
+        if (isSubtask) {
+          const subtask = task as SubTask;
+          this.subtaskService.deleteSubTaskById(subtask.subTaskId).subscribe({
+            next: () => {
+              this.ngOnInit();
+            },
+            error: () => {
+              this.error.set('Failed to delete subtask');
+            }
+          });
+        } else {
+          const t = task as Task;
+          this.taskService.deleteTaskById(t.taskId).subscribe({
+            next: () => {
+              this.ngOnInit();
+            },
+            error: () => {
+              this.error.set('Failed to delete task');
+            }
+          });
         }
-        this.tasks.update(tasks => tasks.map(t => ({
-          ...t,
-          subtasks: t.subtasks.map(s =>
-            s.subTaskId === subtask.subTaskId ? { ...s, ...result } : s
-          )
-        })));
-      } else {
-        const t = task as Task;
-        if (result.status !== t.status) {
-          const req: TaskStatusRequest = { id: t.taskId, status: result.status };
-          this.taskService.updateTaskStatus(req).subscribe();
+      } else if (result.action === 'save') {
+        if (isSubtask) {
+          const subtask = task as SubTask;
+          const updatedSubtask = {
+            ...result.data,
+            parentTaskId: subtask.parentTaskId
+          };
+          this.subtaskService.updateSubTask(subtask.subTaskId, updatedSubtask).subscribe({
+            next: () => {
+              this.tasks.update(tasks => tasks.map(t => ({
+                ...t,
+                subtasks: t.subtasks.map(s =>
+                  s.subTaskId === subtask.subTaskId ? { ...s, ...result.data } : s
+                )
+              })));
+            },
+            error: () => {
+              this.error.set('Failed to update subtask');
+            }
+          });
+        } else {
+          const taskItem = task as Task;
+          this.taskService.updateTask(taskItem.taskId, result.data).subscribe({
+            next: () => {
+              this.tasks.update(tasks => tasks.map(t =>
+                t.taskId === taskItem.taskId ? { ...t, ...result.data } : t
+              ));
+            },
+            error: () => {
+              this.error.set('Failed to update task');
+            }
+          });
         }
-        this.tasks.update(tasks => tasks.map(t =>
-          t.taskId === task.taskId ? { ...t, ...result } : t
-        ));
       }
     });
   }

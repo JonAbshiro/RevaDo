@@ -1,3 +1,11 @@
+<!-- Header with create button -->
+<div class="header">
+  <h1>Tasks</h1>
+  <button mat-fab color="primary" (click)="openCreateDialog()">
+    <mat-icon>add</mat-icon>
+  </button>
+</div>
+
 <!-- Loading state -->
 <div *ngIf="isLoading()" class="state-container">
   <mat-spinner diameter="40"></mat-spinner>
@@ -10,35 +18,49 @@
 <mat-accordion *ngIf="!isLoading() && !error()">
 
   <mat-expansion-panel *ngFor="let task of tasks()">
-
     <mat-expansion-panel-header>
-      <mat-panel-title>
-        <span class="task-name" (click)="openEditDialog(task, false, $event)">
-          {{ task.title }}
+      <mat-panel-title class="title-left">
+        <span class="task-name">
+          {{ task.name }}
         </span>
       </mat-panel-title>
       <mat-panel-description>
         <mat-chip [color]="statusColor(task.status)" highlighted>
           {{ statusLabel(task.status) }}
         </mat-chip>
+        <button mat-icon-button (click)="openEditDialog(task, false, $event)" class="edit-button">
+          <mat-icon>edit</mat-icon>
+        </button>
       </mat-panel-description>
     </mat-expansion-panel-header>
+
 
     <p class="task-description">{{ task.description }}</p>
 
     <mat-divider></mat-divider>
 
+    <!-- Subtask header with add button -->
+    <div class="subtask-header">
+      <h3>Subtasks</h3>
+      <button mat-mini-fab color="primary" (click)="openCreateSubtaskDialog(task, $event)">
+        <mat-icon>add</mat-icon>
+      </button>
+    </div>
+
     <!-- Subtasks -->
     <mat-list *ngIf="task.subtasks.length > 0">
       <mat-list-item *ngFor="let subtask of task.subtasks">
         <mat-icon matListItemIcon>subdirectory_arrow_right</mat-icon>
-        <span matListItemTitle class="task-name" (click)="openEditDialog(subtask, true, $event)">
-          {{ subtask.title }}
-        </span>
+        <span matListItemTitle>{{ subtask.name }}</span>
         <span matListItemLine>{{ subtask.description }}</span>
-        <mat-chip matListItemMeta [color]="statusColor(subtask.status)" highlighted>
-          {{ statusLabel(subtask.status) }}
-        </mat-chip>
+        <div matListItemMeta class="subtask-actions">
+          <mat-chip [color]="statusColor(subtask.status)" highlighted>
+            {{ statusLabel(subtask.status) }}
+          </mat-chip>
+          <button mat-icon-button (click)="openEditDialog(subtask, true, $event)" class="edit-button">
+            <mat-icon>edit</mat-icon>
+          </button>
+        </div>
       </mat-list-item>
     </mat-list>
 
@@ -48,5 +70,4 @@
 
 </mat-accordion>
 
-<!-- Empty state -->
 <p *ngIf="!isLoading() && tasks().length === 0" class="empty-state">No tasks found.</p>

@@ -4,22 +4,17 @@ import { Observable } from 'rxjs';
 
 export interface Task {
   taskId: string;
-  title: string;
+  name: string;
   description: string;
   status: string;
   assignedTo: string;
 }
 
 export interface TaskCreateRequest {
-  title: string;
+  name: string;
   description: string;
   status: string;
   assignedTo: string;
-}
-
-export interface StatusRequest {
-  id: string;
-  status: string;
 }
 
 @Injectable({
@@ -54,9 +49,5 @@ export class TaskService {
 
   updateTask(id: string, task: TaskCreateRequest): Observable<void> {
     return this.httpClient.patch<void>(`${this.apiUrl}/tasks/${id}`, task);
-  }
-
-  updateTaskStatus(updateRequest: StatusRequest): Observable<void> {
-    return this.httpClient.post<void>(`${this.apiUrl}/tasks/status`, updateRequest);
   }
 }

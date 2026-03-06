@@ -1,9 +1,11 @@
-<h2 mat-dialog-title>{{ data.isSubtask ? 'Edit Subtask' : 'Edit Task' }}</h2>
+<h2 mat-dialog-title>
+  {{ isCreateMode ? (data.isSubtask ? 'Create Subtask' : 'Create Task') : (data.isSubtask ? 'Edit Subtask' : 'Edit Task') }}
+</h2>
 <mat-dialog-content>
   <form [formGroup]="editForm">
     <mat-form-field appearance="outline">
-      <mat-label>Title</mat-label>
-      <input matInput formControlName="title" />
+      <mat-label>Name</mat-label>
+      <input matInput formControlName="name" />
     </mat-form-field>
     <mat-form-field appearance="outline">
       <mat-label>Description</mat-label>
@@ -12,14 +14,16 @@
     <mat-form-field appearance="outline">
       <mat-label>Status</mat-label>
       <mat-select formControlName="status">
-        <mat-option value="todo">To Do</mat-option>
-        <mat-option value="in-progress">In Progress</mat-option>
-        <mat-option value="done">Done</mat-option>
+        <mat-option value="TODO">To Do</mat-option>
+        <mat-option value="IN_PROGRESS">In Progress</mat-option>
+        <mat-option value="DONE">Done</mat-option>
       </mat-select>
     </mat-form-field>
   </form>
 </mat-dialog-content>
-<mat-dialog-actions align="end">
+<mat-dialog-actions>
+  <button *ngIf="!isCreateMode" mat-button color="warn" (click)="delete()">Delete</button>
+  <div class="spacer"></div>
   <button mat-button mat-dialog-close>Cancel</button>
-  <button mat-flat-button color="primary" (click)="save()">Save</button>
+  <button mat-flat-button color="primary" (click)="save()">{{ isCreateMode ? 'Create' : 'Save' }}</button>
 </mat-dialog-actions>

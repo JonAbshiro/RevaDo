@@ -25,12 +25,21 @@ export class UserService {
       tap(response => {
         this.authToken = response.token;
         localStorage.setItem('token', response.token);
+
+        // Decode JWT and store userId
+        const payload = JSON.parse(atob(response.token.split('.')[1]));
+        localStorage.setItem('userId', payload.sub);
+        localStorage.setItem('email', payload.email);
       })
     );
   }
 
   getAuthToken(){
     return this.authToken;
+  }
+
+  getUserId(): string | null {
+    return localStorage.getItem('userId');
   }
 
 }

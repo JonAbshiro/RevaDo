@@ -4,25 +4,19 @@ import { Observable } from 'rxjs';
 
 export interface SubTask {
   subTaskId: string;
-  title: string;
+  name: string;
   description: string;
   status: string;
   assignedTo: string;
-  taskId: string;
-  createdAt: string;
+  parentTaskId: string;
 }
 
 export interface SubtaskCreateRequest {
-  title: string;
+  name: string;
   description: string;
   status: string;
   assignedTo: string;
-  taskId: string;
-}
-
-export interface StatusRequest {
-  id: string;
-  status: string;
+  parentTaskId: string;
 }
 
 @Injectable({
@@ -57,9 +51,5 @@ export class SubtaskService {
 
   updateSubTask(id: string, subtask: SubtaskCreateRequest): Observable<void> {
     return this.httpClient.patch<void>(`${this.apiUrl}/subtasks/${id}`, subtask);
-  }
-
-  updateSubTaskStatus(updateRequest: StatusRequest): Observable<void> {
-    return this.httpClient.patch<void>(`${this.apiUrl}/subtasks/status`, updateRequest);
   }
 }

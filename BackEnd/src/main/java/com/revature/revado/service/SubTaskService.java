@@ -1,10 +1,8 @@
 package com.revature.revado.service;
 
-import com.revature.revado.dto.StatusRequest;
 import com.revature.revado.dto.SubtaskCreateRequest;
 import com.revature.revado.entity.SubTask;
 import com.revature.revado.repository.SubTaskRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
@@ -43,18 +41,8 @@ public class SubTaskService{
         SubTask subTask = new SubTask();
         subTaskRequest.setName(subTaskRequest.getName());
         subTaskRequest.setDescription(subTaskRequest.getDescription());
-        subTask.setParentTaskId(subTaskRequest.getParentTaskId());
+        subTask.setParentTaskId(UUID.fromString(subTaskRequest.getParentTaskId()));
         subTask.setAssignedTo(StringUtils.isNotBlank(subTaskRequest.getAssignedTo()) ? subTaskRequest.getAssignedTo() : null);
-        subTaskRepository.save(subTask);
-    }
-
-    @Transactional
-    public void updateSubTask(StatusRequest statusRequest) {
-        SubTask subTask = subTaskRepository.findById(statusRequest.getId())
-                .orElseThrow(() ->
-                        new IllegalArgumentException("SubTask with id " + statusRequest.getId() + " not found.")
-                );
-        subTask.setStatus(statusRequest.getStatus());
         subTaskRepository.save(subTask);
     }
 

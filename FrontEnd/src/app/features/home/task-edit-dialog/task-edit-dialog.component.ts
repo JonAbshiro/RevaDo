@@ -26,22 +26,32 @@ import { SubTask } from '../../../core/services/subtask.service';
 })
 export class TaskEditDialogComponent {
   editForm: FormGroup;
+  isCreateMode: boolean;
 
   constructor(
     private fb: FormBuilder,
     public dialogRef: MatDialogRef<TaskEditDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { task: Task | SubTask; isSubtask: boolean }
+    @Inject(MAT_DIALOG_DATA) public data: { task?: Task | SubTask; isSubtask: boolean; isCreate?: boolean; currentUser?: string }
   ) {
+    this.isCreateMode = data.isCreate ?? false;
     this.editForm = this.fb.group({
-      title: [data.task.title, Validators.required],
-      description: [data.task.description],
-      status: [data.task.status, Validators.required],
+      name: [data.task?.name || '', Validators.required],
+      description: [data.task?.description || ''],
+      status: [data.task?.status || 'TODO', Validators.required],
     });
   }
 
   save(): void {
     if (this.editForm.valid) {
-      this.dialogRef.close(this.editForm.value);
+      const formValue = {
+        ...this.editForm.value,
+        assignedTo: this.data.currentUser || 'current-user'
+      };
+      this.dialogRef.close({ action: 'save', data: formValue });
     }
+  }
+
+  delete(): void {
+    this.dialogRef.close({ action: 'delete' });
   }
 }
