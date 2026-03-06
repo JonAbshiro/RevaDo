@@ -31,6 +31,7 @@ public class SubTaskService{
         SubTask subTask = subTaskRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Subtask not found"));
         subTask.setName(updateRequest.getName());
+        subTask.setParentTaskId(UUID.fromString(updateRequest.getParentTaskId()));
         subTask.setDescription(updateRequest.getDescription());
         subTask.setStatus(updateRequest.getStatus());
         subTask.setAssignedTo(updateRequest.getAssignedTo());
@@ -39,8 +40,9 @@ public class SubTaskService{
 
     public void addSubTask(SubtaskCreateRequest subTaskRequest) {
         SubTask subTask = new SubTask();
-        subTaskRequest.setName(subTaskRequest.getName());
-        subTaskRequest.setDescription(subTaskRequest.getDescription());
+        subTask.setName(subTaskRequest.getName());
+        subTask.setDescription(subTaskRequest.getDescription());
+        subTask.setStatus(subTaskRequest.getStatus());
         subTask.setParentTaskId(UUID.fromString(subTaskRequest.getParentTaskId()));
         subTask.setAssignedTo(StringUtils.isNotBlank(subTaskRequest.getAssignedTo()) ? subTaskRequest.getAssignedTo() : null);
         subTaskRepository.save(subTask);

@@ -3,7 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 export interface SubTask {
-  subTaskId: string;
+  id: string;
   name: string;
   description: string;
   status: string;

@@ -129,7 +129,7 @@ export class HomeComponent implements OnInit {
       if (result.action === 'delete') {
         if (isSubtask) {
           const subtask = task as SubTask;
-          this.subtaskService.deleteSubTaskById(subtask.subTaskId).subscribe({
+          this.subtaskService.deleteSubTaskById(subtask.id).subscribe({
             next: () => {
               this.ngOnInit();
             },
@@ -155,12 +155,12 @@ export class HomeComponent implements OnInit {
             ...result.data,
             parentTaskId: subtask.parentTaskId
           };
-          this.subtaskService.updateSubTask(subtask.subTaskId, updatedSubtask).subscribe({
+          this.subtaskService.updateSubTask(subtask.id, updatedSubtask).subscribe({
             next: () => {
               this.tasks.update(tasks => tasks.map(t => ({
                 ...t,
                 subtasks: t.subtasks.map(s =>
-                  s.subTaskId === subtask.subTaskId ? { ...s, ...result.data } : s
+                  s.id === subtask.id ? { ...s, ...result.data } : s
                 )
               })));
             },
