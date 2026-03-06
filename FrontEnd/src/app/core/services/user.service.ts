@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { tap } from 'rxjs';
 import { HttpClient, HttpHandler, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
 
@@ -16,10 +17,15 @@ export class UserService {
       {username, password, phoneNumber, email})
   }
 
-  login(username: string, password: string) {
+  login(email: string, password: string) {
     return this.httpClient.post<{token: string}>(
       "http://localhost:8080/login",
-      { username, password },
+      { email, password },
+    ).pipe(
+      tap(response => {
+        this.authToken = response.token;
+        localStorage.setItem('token', response.token);
+      })
     );
   }
 

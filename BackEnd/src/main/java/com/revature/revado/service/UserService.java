@@ -11,56 +11,58 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
-public class UserService{
+public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
     private final JwtUtility jwtUtility;
 
-    public Map<String, String> validateCredentials(User credentials){
-        String username = credentials.getUsername();
+    public Map<String, String> validateCredentials(User credentials) {
+        String email = credentials.getEmail();
         String password = credentials.getPassword();
         Map<String, String> responseMap = new HashMap<>();
-        Optional<User> user = userRepository.findByUsernameAndPassword(username, password);
-        if(user.isPresent()){
+        Optional<User> user = userRepository.findByEmail(email);
+
+        if (user.isPresent() && passwordEncoder.matches(password, user.get().getPassword())) {
             UUID userId = user.get().getId();
-            String token = jwtUtility.generateAccessToken(userId, username);
+            String token = jwtUtility.generateAccessToken(userId, email);
             responseMap.put("token", token);
             return responseMap;
         }
-        throw new LoginFail("Login attempt failed");
+        throw new LoginFail("Invalid Credentials");
     }
 
-    public boolean validateToken(String token){
-        if (token == null){
+    public boolean validateToken(String token) {
+        if (token == null) {
             throw new AuthFail("Token not found");
         }
-        try{
-            System.out.println(token);
+        try {
             String tokenSplit = token.split(" ")[1];
             String id = jwtUtility.extractId(tokenSplit);
-            System.out.println(id);
-            String username = jwtUtility.extractUsername(tokenSplit);
-            System.out.println(username);
+            String email = jwtUtility.extractEmail(tokenSplit);
             Optional<User> user = userRepository.findById(UUID.fromString(id));
-            if(user.isPresent()){
+            if (user.isPresent()) {
                 User foundUser = user.get();
-                return foundUser.getId().equals(UUID.fromString(id)) && foundUser.getUsername().equals(username);
+                return foundUser.getId().equals(UUID.fromString(id)) && foundUser.getEmail().equals(email);
             }
             return false;
-        } catch (JwtException e){
+        } catch (JwtException e) {
             throw new AuthFail("Token could not be parsed");
         }
     }
-    
+
     public UUID createUser(UserCreateRequest request) {
+        if (userRepository.existsByEmail(request.getEmail())) {
+            throw new IllegalArgumentException("Email already in use");
+        }
+        if (userRepository.existsByUsername(request.getUsername())) {
+            throw new IllegalArgumentException("Username already in use");
+        }
+        System.out.println(request);
         User newUser = new User();
         newUser.setUsername(request.getUsername());
         newUser.setEmail(request.getEmail());
@@ -68,5 +70,13 @@ public class UserService{
         newUser.setPhoneNumber(request.getPhoneNumber());
         userRepository.save(newUser);
         return newUser.getId();
+    }
+
+    public List<User> getAll() {
+        return userRepository.findAll();
+    }
+
+    public void deleteUserById(UUID id) {
+        userRepository.deleteById(id);
     }
 }
