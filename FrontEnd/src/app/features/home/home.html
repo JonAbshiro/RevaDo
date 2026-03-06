@@ -1,0 +1,52 @@
+<!-- Loading state -->
+<div *ngIf="isLoading()" class="state-container">
+  <mat-spinner diameter="40"></mat-spinner>
+</div>
+
+<!-- Error state -->
+<mat-error *ngIf="error()">{{ error() }}</mat-error>
+
+<!-- Task list -->
+<mat-accordion *ngIf="!isLoading() && !error()">
+
+  <mat-expansion-panel *ngFor="let task of tasks()">
+
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        <span class="task-name" (click)="openEditDialog(task, false, $event)">
+          {{ task.title }}
+        </span>
+      </mat-panel-title>
+      <mat-panel-description>
+        <mat-chip [color]="statusColor(task.status)" highlighted>
+          {{ statusLabel(task.status) }}
+        </mat-chip>
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+
+    <p class="task-description">{{ task.description }}</p>
+
+    <mat-divider></mat-divider>
+
+    <!-- Subtasks -->
+    <mat-list *ngIf="task.subtasks.length > 0">
+      <mat-list-item *ngFor="let subtask of task.subtasks">
+        <mat-icon matListItemIcon>subdirectory_arrow_right</mat-icon>
+        <span matListItemTitle class="task-name" (click)="openEditDialog(subtask, true, $event)">
+          {{ subtask.title }}
+        </span>
+        <span matListItemLine>{{ subtask.description }}</span>
+        <mat-chip matListItemMeta [color]="statusColor(subtask.status)" highlighted>
+          {{ statusLabel(subtask.status) }}
+        </mat-chip>
+      </mat-list-item>
+    </mat-list>
+
+    <p *ngIf="task.subtasks.length === 0" class="no-subtasks">No subtasks</p>
+
+  </mat-expansion-panel>
+
+</mat-accordion>
+
+<!-- Empty state -->
+<p *ngIf="!isLoading() && tasks().length === 0" class="empty-state">No tasks found.</p>
