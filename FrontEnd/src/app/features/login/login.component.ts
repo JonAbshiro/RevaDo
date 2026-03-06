@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -7,6 +7,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { UserService } from '../../core/services/user.service';
+import { Router } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
+import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -27,9 +31,11 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 export class LoginComponent {
   loginForm: FormGroup;
   hidePassword = true;
-  isLoading = false;
+  isLoading = signal(false);
+  isError = signal(false);
+  error= signal('');
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private userService:UserService, private router: Router) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(8)]],
@@ -53,12 +59,21 @@ export class LoginComponent {
 
   onSubmit(): void {
     if (this.loginForm.valid) {
-      this.isLoading = true;
-      // Simulate API call
-      setTimeout(() => {
-        this.isLoading = false;
-        console.log('Login submitted:', this.loginForm.value);
-      }, 2000);
+      this.isLoading.set(true);
+      this.userService.login(
+        this.loginForm.get('email')?.value,
+        this.loginForm.get('password')?.value
+      ).subscribe({
+        next: (response) => {
+          this.isLoading.set(false);
+          this.router.navigate(['/home']);
+        },
+        error: (err: HttpErrorResponse) => {
+          this.isLoading.set(false);
+          this.isError.set(true);
+          this.error.set(err.error?.message || err.message);
+        }
+      });
     } else {
       this.loginForm.markAllAsTouched();
     }

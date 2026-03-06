@@ -90,15 +90,16 @@
           type="submit"
           class="submit-btn"
           color="primary"
-          [disabled]="isLoading"
+          [disabled]="isLoading()"
           aria-live="polite"
         >
-          <span *ngIf="!isLoading" class="btn-content">
+          <span *ngIf="!isLoading()" class="btn-content">
             <span>Sign in</span>
             <mat-icon class="btn-arrow">arrow_forward</mat-icon>
           </span>
-          <mat-spinner *ngIf="isLoading" diameter="22" class="btn-spinner"></mat-spinner>
+          <mat-spinner *ngIf="isLoading()" diameter="22" class="btn-spinner"></mat-spinner>
         </button>
+        <mat-error *ngIf="isError()" class="error-message">{{ error() }}</mat-error>
 
 
       </form>

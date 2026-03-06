@@ -13,7 +13,7 @@ import java.util.UUID;
 public class UserController {
     private final UserService userService;
 
-    @PostMapping
+    @PostMapping(path = "/user")
     public UUID createUser(UserCreateRequest request) {
         return userService.createUser(request);
     }
