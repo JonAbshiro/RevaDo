@@ -12,7 +12,7 @@ export class UserService {
   constructor(private httpClient: HttpClient, private router: Router){}
 
   createUser(username: string, password: string, email: string, phoneNumber: string ){
-    return this.httpClient.post<{email:string, username: string, phoneNumber: string, password: string}>
+    return this.httpClient.post<{username: string, password: string, email:string,  phoneNumber: string}>
     ("http://localhost:8080/user",
       {username, password, phoneNumber, email})
   }
@@ -40,6 +40,14 @@ export class UserService {
 
   getUserId(): string | null {
     return localStorage.getItem('userId');
+  }
+
+  logout(): void {
+    this.authToken = '';
+    localStorage.removeItem('token');
+    localStorage.removeItem('userId');
+    localStorage.removeItem('email');
+    this.router.navigate(['/login']);
   }
 
 }

@@ -85,9 +85,9 @@ export class CreateUserComponent {
     if (this.createForm.valid) {
       this.isLoading.set(true);
       this.userService.createUser(
-        this.createForm.get('email')?.value,
-        this.createForm.get('password')?.value,
         this.createForm.get('username')?.value,
+        this.createForm.get('password')?.value,
+        this.createForm.get('email')?.value,
         this.createForm.get('phoneNumber')?.value
       ).subscribe({
         next: (response) => {

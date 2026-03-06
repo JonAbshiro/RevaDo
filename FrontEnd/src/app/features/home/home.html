@@ -1,9 +1,14 @@
 <!-- Header with create button -->
 <div class="header">
   <h1>Tasks</h1>
-  <button mat-fab color="primary" (click)="openCreateDialog()">
-    <mat-icon>add</mat-icon>
-  </button>
+  <div class="header-actions">
+    <button mat-fab color="primary" (click)="openCreateDialog()">
+      <mat-icon>add</mat-icon>
+    </button>
+    <button mat-icon-button (click)="logout()" class="logout-button">
+      <mat-icon>logout</mat-icon>
+    </button>
+  </div>
 </div>
 
 <!-- Loading state -->

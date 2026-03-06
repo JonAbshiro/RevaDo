@@ -11,6 +11,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { TaskService, Task } from '../../core/services/task.service';
 import { SubtaskService, SubTask } from '../../core/services/subtask.service';
+import { UserService } from '../../core/services/user.service';
 import { TaskEditDialogComponent } from './task-edit-dialog/task-edit-dialog.component';
 import { forkJoin } from 'rxjs';
 
@@ -45,13 +46,22 @@ export class HomeComponent implements OnInit {
   constructor(
     private taskService: TaskService,
     private subtaskService: SubtaskService,
+    private userService: UserService,
     private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
+    const currentUserId = localStorage.getItem('userId');
+
+    if (!currentUserId) {
+      this.error.set('User not logged in');
+      this.isLoading.set(false);
+      return;
+    }
+
     forkJoin({
-      tasks: this.taskService.getTasks(),
-      subtasks: this.subtaskService.getSubTasks()
+      tasks: this.taskService.getTasksByAssignedTo(currentUserId),
+      subtasks: this.subtaskService.getSubTasksByAssignedTo(currentUserId)
     }).subscribe({
       next: ({ tasks, subtasks }) => {
         const tasksWithSubtasks: TaskWithSubtasks[] = tasks.map(task => ({
@@ -191,5 +201,9 @@ export class HomeComponent implements OnInit {
 
   statusLabel(status: string): string {
     return ({ todo: 'To Do', 'in-progress': 'In Progress', done: 'Done' } as Record<string, string>)[status] ?? status;
+  }
+
+  logout(): void {
+    this.userService.logout();
   }
 }
